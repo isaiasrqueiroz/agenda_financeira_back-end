@@ -5,6 +5,7 @@ import com.finance.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -26,7 +27,7 @@ public class CategoryResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response) {
+    public ResponseEntity<Category> create(@Validated @RequestBody Category category, HttpServletResponse response) {
         Category categorySave = categoryRepository.save(category);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categorySave.getId()).toUri();
@@ -36,7 +37,7 @@ public class CategoryResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
+    public ResponseEntity<Category> findById(@PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         return category != null ? ResponseEntity.ok(category) : ResponseEntity.notFound().build();
     }
